@@ -20,3 +20,6 @@ docs/.cache
 
 # Localisation keys
 localazy.keys.json
+
+# Mac files
+.DS_Store
