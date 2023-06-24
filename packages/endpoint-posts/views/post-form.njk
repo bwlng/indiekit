@@ -184,6 +184,17 @@
     }) | indent(4) }}
 
     {{ input({
+      classes: "input--width-50",
+      id: "location-name",
+      name: "location-name",
+      value: errors["location-name"].value or post.location.name or post["location-name"],
+      label: {
+        text: "Location Name"
+      },
+      optional: true
+    }) | indent(4) }}
+
+    {{ input({
       classes: "input--width-25",
       id: "mp-slug",
       name: "mp-slug",

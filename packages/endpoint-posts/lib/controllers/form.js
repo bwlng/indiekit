@@ -56,6 +56,16 @@ export const formController = {
       if (values.geo) {
         values.location = getLocationProperty(values.geo);
         delete values.geo;
+
+        if (values["location-name"]) {
+          values.location = {
+            ...values.location,
+            ...(values["location-name"]
+              ? { name: values["location-name"] }
+              : {}),
+          };
+          delete values["location-name"];
+        }
       }
 
       // Delete empty values
