@@ -20,7 +20,7 @@ export const getFileProperties = async (publication, file) => {
   const { timeZone } = publication;
 
   const basename = randomString();
-  const { ext } = await fileTypeFromBuffer(file.data);
+  const { ext, mime } = await fileTypeFromBuffer(file.data);
   const published = getPublishedProperty(timeZone);
 
   return {
@@ -28,7 +28,7 @@ export const getFileProperties = async (publication, file) => {
     ext,
     filename: `${basename}.${ext}`,
     originalname: file.name,
-    "content-type": file.mimetype,
+    "content-type": mime,
     published,
   };
 };
