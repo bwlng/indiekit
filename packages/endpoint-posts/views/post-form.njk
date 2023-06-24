@@ -121,7 +121,7 @@
   {{ textarea({
     id: "content",
     name: "content",
-    value: errors.content.value or post.content.text,
+    value: errors.content.value or post.content.text or post.content,
     label: {
       text: __("posts.form.content.label")
     },
@@ -170,7 +170,7 @@
     {{ geoInput({
       id: "geo",
       name: "geo",
-      value: errors.geo.value or geo,
+      value: errors.geo.value or geo or post.geo,
       label: {
         text: __("posts.form.geo.label")
       },
