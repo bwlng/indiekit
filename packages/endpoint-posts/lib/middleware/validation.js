@@ -26,14 +26,15 @@ export const validate = [
     .exists()
     .isURL()
     .withMessage((value, { req, path }) => req.__(`posts.error.${path}.empty`)),
-  check("name")
-    .if(
-      (value, { req }) =>
-        req.body?.["post-type"] === "article" ||
-        req.body?.["post-type"] === "bookmark"
-    )
-    .notEmpty()
-    .withMessage((value, { req, path }) => req.__(`posts.error.${path}.empty`)),
+  // Disable check for empty name for articles and bookmarks
+  // check("name")
+  //   .if(
+  //     (value, { req }) =>
+  //       req.body?.["post-type"] === "article" ||
+  //       req.body?.["post-type"] === "bookmark"
+  //   )
+  //   .notEmpty()
+  //   .withMessage((value, { req, path }) => req.__(`posts.error.${path}.empty`)),
   check("content")
     .if(
       (value, { req }) =>
