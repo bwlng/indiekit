@@ -12,8 +12,8 @@ import { IndieAuth } from "./indieauth.js";
 
 const router = express.Router(); // eslint-disable-line new-cap
 const limit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 250,
+  windowMs: 60 * 1000, // 1 minutes
+  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
 });
