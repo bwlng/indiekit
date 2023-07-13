@@ -4,14 +4,14 @@ import { getFixture } from "@indiekit-test/fixtures";
 import { testToken } from "@indiekit-test/token";
 import { uploadMedia } from "../../lib/media.js";
 
-await mockAgent("media-endpoint");
+await mockAgent("endpoint-micropub");
 
 test.beforeEach((t) => {
   t.context = {
     bearerToken: testToken(),
     files: {
       photo: {
-        data: getFixture("file-types/photo.jpg", null),
+        data: getFixture("file-types/photo.jpg", false),
         name: "photo",
         originalname: "photo1.jpg",
       },
@@ -43,11 +43,11 @@ test("Uploads attached files via media endpoint", async (t) => {
   const files = {
     photo: [
       {
-        data: getFixture("file-types/photo.jpg", null),
+        data: getFixture("file-types/photo.jpg"),
         name: "photo2.jpg",
       },
       {
-        buffer: getFixture("file-types/photo.jpg", null),
+        buffer: getFixture("file-types/photo.jpg"),
         name: "photo3.jpg",
       },
     ],

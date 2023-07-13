@@ -1,24 +1,17 @@
 import crypto from "node:crypto";
-import path from "node:path";
+import { getServerTimeZone, supplant } from "@indiekit/util";
 import { format } from "date-fns-tz";
 import newbase60 from "newbase60";
-import { getServerTimeZone } from "./date.js";
-
-/**
- * Generate random alpha-numeric string, 5 characters long
- * @returns {string} Alpha-numeric string
- * @example random() => 'f0pjf'
- */
-export const randomString = () => Math.random().toString(36).slice(-5);
+import { mediaTypeCount } from "./media-type-count.js";
 
 /**
  * Render path from URI template and properties
  * @param {string} path - URI template path
  * @param {object} properties - Properties to use
- * @param {object} publication - Publication configuration
- * @returns {string} Path
+ * @param {object} application - Application configuration
+ * @returns {Promise<string>} Path
  */
-export const renderPath = (path, properties, publication) => {
+export const renderPath = async (path, properties, application) => {
   let tokens = {};
   const dateObject = new Date(properties.published);
   const serverTimeZone = getServerTimeZone();
@@ -51,9 +44,9 @@ export const renderPath = (path, properties, publication) => {
   for (const dateToken of dateTokens) {
     tokens[dateToken] = format(dateObject, dateToken, {
       timeZone:
-        publication.timeZone === "server"
+        application.timeZone === "server"
           ? serverTimeZone
-          : publication.timeZone,
+          : application.timeZone,
       // @ts-ignore (https://github.com/marnusw/date-fns-tz/issues/239)
       useAdditionalDayOfYearTokens: true,
     });
@@ -61,6 +54,10 @@ export const renderPath = (path, properties, publication) => {
 
   // Add day of the year (NewBase60) token
   tokens.D60 = newbase60.DateToSxg(dateObject); // eslint-disable-line new-cap
+
+  // Add count of media type for the day
+  const count = await mediaTypeCount.get(application, properties);
+  tokens.n = count + 1;
 
   // Add slug token if 'mp-slug' property
   if (properties["mp-slug"]) {
@@ -75,43 +72,6 @@ export const renderPath = (path, properties, publication) => {
   path = supplant(path, tokens);
 
   return path;
-};
-
-/**
- * Substitute variables enclosed in { } braces with data from object
- * @param {string} string - String to parse
- * @param {object} object - Properties to use
- * @returns {string} String with substituted
- */
-export const supplant = (string, object) => {
-  const replacer = function (match, p1) {
-    const r = object[p1];
-
-    if (typeof r === "string" || typeof r === "number") {
-      return r;
-    }
-
-    return match;
-  };
-
-  return string.replace(/{([^{}]*)}/g, replacer);
-};
-
-/**
- * Derive a permalink (by combining publication URL, that may include a path,
- * with the path to a post or file
- * @param {object} url - URL
- * @param {object} pathname - Permalink path
- * @returns {string} Returns either 'photo', 'video' or audio
- * @example permalink('http://foo.bar/baz', '/qux/quux') =>
- *   'http://foo.bar/baz/qux/quux'
- */
-export const getPermalink = (url, pathname) => {
-  url = new URL(url);
-  let permalink = path.join(url.pathname, pathname);
-  permalink = new URL(permalink, url).href;
-
-  return permalink;
 };
 
 /**

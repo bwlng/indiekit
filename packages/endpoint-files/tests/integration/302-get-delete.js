@@ -6,7 +6,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
 import { testToken } from "@indiekit-test/token";
 
-await mockAgent("store");
+await mockAgent("endpoint-media");
 
 test("Redirects to file page if no delete permissions", async (t) => {
   // Upload file
@@ -16,7 +16,7 @@ test("Redirects to file page if no delete permissions", async (t) => {
     .post("/media")
     .auth(testToken({ scope: "media" }), { type: "bearer" })
     .set("accept", "application/json")
-    .attach("file", getFixture("file-types/photo.jpg", null), "photo.jpg");
+    .attach("file", getFixture("file-types/photo.jpg", false), "photo.jpg");
   const id = Buffer.from(uploadResponse.headers.location).toString("base64url");
 
   // Request delete page

@@ -25,9 +25,11 @@ export const defaultConfig = {
     ],
     mongodbUrl: process.env.MONGO_URL || false,
     name: "Indiekit",
+    port: process.env.PORT || "3000",
     repository: package_.repository,
     themeColor: "#04f",
     themeColorScheme: "automatic",
+    timeZone: "UTC",
     ttl: 604_800, // 7 days
     version: package_.version,
   },
@@ -44,18 +46,14 @@ export const defaultConfig = {
   publication: {
     categories: [],
     locale: "en",
-    me: null,
-    postTemplate: null,
+    me: undefined,
+    postTemplate: undefined,
     postTypes: [],
-    preset: null,
+    preset: undefined,
     slugSeparator: "-",
     storeMessageTemplate: (metaData) =>
       `${metaData.action} ${metaData.postType} ${metaData.fileType}`,
     syndicationTargets: [],
-    timeZone: "UTC",
-  },
-  server: {
-    port: process.env.PORT || "3000",
   },
 };
 

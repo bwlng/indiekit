@@ -16,7 +16,7 @@ export const formController = {
       return response.render("post-form", {
         title: response.locals.__(
           `posts.${action}.title`,
-          postTypeName.toLowerCase()
+          postTypeName.toLowerCase().replace("rsvp", "RSVP")
         ),
       });
     }
@@ -37,7 +37,7 @@ export const formController = {
       return response.status(422).render("post-form", {
         title: response.locals.__(
           `posts.${action}.title`,
-          postTypeName.toLowerCase()
+          postTypeName.toLowerCase().replace("rsvp", "RSVP")
         ),
         errors: errors.mapped(),
       });
@@ -99,7 +99,7 @@ export const formController = {
       response.render("post-form", {
         title: response.locals.__(
           `posts.${action}.title`,
-          postTypeName.toLowerCase()
+          postTypeName.toLowerCase().replace("rsvp", "RSVP")
         ),
         error,
       });

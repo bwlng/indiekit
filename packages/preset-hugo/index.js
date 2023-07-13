@@ -58,7 +58,7 @@ export default class HugoPreset {
     switch (this.options.frontMatterFormat) {
       case "json": {
         delimiters = ["", "\n"];
-        frontMatter = JSON.stringify(properties, null, 2);
+        frontMatter = JSON.stringify(properties, undefined, 2);
         break;
       }
 
@@ -218,7 +218,7 @@ export default class HugoPreset {
         properties.content.text ||
         properties.content.html ||
         properties.content;
-      content = `${content}\n`;
+      content = `\n${content}\n`;
     } else {
       content = "";
     }

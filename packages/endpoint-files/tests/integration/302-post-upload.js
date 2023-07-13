@@ -5,7 +5,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
 import { cookie } from "@indiekit-test/session";
 
-await mockAgent("store");
+await mockAgent("endpoint-media");
 
 test.failing("Uploads file and redirects to files page", async (t) => {
   const server = await testServer();
@@ -13,7 +13,7 @@ test.failing("Uploads file and redirects to files page", async (t) => {
   const result = await request
     .post("/files/upload")
     .set("cookie", [cookie()])
-    .attach("file", getFixture("file-types/photo.jpg", null), "photo.jpg");
+    .attach("file", getFixture("file-types/photo.jpg", false), "photo.jpg");
 
   t.is(result.status, 302);
   t.regex(result.text, /Found. Redirecting to \/files\?success/);

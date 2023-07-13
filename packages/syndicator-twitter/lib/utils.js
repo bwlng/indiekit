@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import path from "node:path";
 import { IndiekitError } from "@indiekit/error";
 import brevity from "brevity";
@@ -7,10 +6,10 @@ import { htmlToText } from "html-to-text";
 /**
  * Get status parameters from given JF2 properties
  * @param {object} properties - A JF2 properties object
- * @param {Array|null} [mediaIds=null] - Twitter media IDs
+ * @param {Array|null} [mediaIds] - Twitter media IDs
  * @returns {object} Status parameters
  */
-export const createStatus = (properties, mediaIds = null) => {
+export const createStatus = (properties, mediaIds) => {
   const parameters = {};
 
   let status;
@@ -71,21 +70,6 @@ export const createStatus = (properties, mediaIds = null) => {
 };
 
 /**
- * Get absolute URL
- * @param {string} string - URL or path
- * @param {string} me - Publication URL
- * @returns {string} Absolute URL
- */
-export const getAbsoluteUrl = (string, me) => {
-  try {
-    return new URL(string).href;
-  } catch {
-    const absoluteUrl = path.posix.join(me, string);
-    return new URL(absoluteUrl).href;
-  }
-};
-
-/**
  * Get status ID from Twitter status URL
  * @param {string} url - Twitter status URL
  * @returns {string} Status ID
@@ -113,7 +97,7 @@ export const htmlToStatusText = (html) => {
   });
 
   // Get the last link mentioned, or return false
-  const lastHref = hrefs.length > 0 ? hrefs[hrefs.length - 1][1] : false;
+  const lastHref = hrefs.length > 0 ? hrefs.at(-1)[1] : false;
 
   // Convert HTML to plain text, removing any links
   const text = htmlToText(html, {
@@ -136,14 +120,4 @@ export const htmlToStatusText = (html) => {
   const statusText = lastHref ? `${text} ${lastHref}` : text;
 
   return statusText;
-};
-
-/**
- * Test if string is a Twitter status URL
- * @param {string} string - URL
- * @returns {boolean} Twitter status URL?
- */
-export const isTweetUrl = (string) => {
-  const parsedUrl = new URL(string);
-  return parsedUrl.hostname === "twitter.com";
 };

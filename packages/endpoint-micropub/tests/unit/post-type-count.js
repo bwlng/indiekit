@@ -1,6 +1,12 @@
 import test from "ava";
+import sinon from "sinon";
 import JekyllPreset from "@indiekit/preset-jekyll";
 import { postTypeCount } from "../../lib/post-type-count.js";
+
+test.before(() => {
+  sinon.stub(console, "info"); // Disable console.info
+  sinon.stub(console, "warn"); // Disable console.warn
+});
 
 test.beforeEach((t) => {
   t.context = {
@@ -11,7 +17,7 @@ test.beforeEach((t) => {
       "mp-slug": "bar",
       "post-type": "note",
     },
-    publication: {
+    application: {
       me: "https://website.example",
       postTypes: new JekyllPreset().postTypes,
       posts: {
@@ -37,7 +43,7 @@ test.beforeEach((t) => {
 
 test("Counts the number of posts of a given type", async (t) => {
   const result = await postTypeCount.get(
-    t.context.publication,
+    t.context.application,
     t.context.properties
   );
 

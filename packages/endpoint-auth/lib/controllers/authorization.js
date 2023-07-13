@@ -1,8 +1,8 @@
 import { IndiekitError } from "@indiekit/error";
+import { getCanonicalUrl, isUrl } from "@indiekit/util";
 import { getClientInformation } from "../client.js";
 import { createRequestUri } from "../pushed-authorization-request.js";
 import { validateRedirect } from "../redirect.js";
-import { getCanonicalUrl, isUrl } from "../utils.js";
 
 export const authorizationController = {
   /**
@@ -89,6 +89,7 @@ export const authorizationController = {
 
   /**
    * Authorization code request
+   *
    * Redeem verified authorization code for a profile URL.
    * @type {import("express").RequestHandler}
    * @see {@link https://indieauth.spec.indieweb.org/#redeeming-the-authorization-code}

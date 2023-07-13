@@ -1,6 +1,3 @@
-/* global Blob */
-import { fetch, FormData } from "undici";
-
 /**
  * Upload attached file(s) via media endpoint
  * @param {string} mediaEndpoint - Media endpoint URL

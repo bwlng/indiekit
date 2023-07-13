@@ -23,7 +23,7 @@ Indiekit uses Proof Key for Code Exchange (PKCE), but doesn’t require clients 
 
 ### Access tokens
 
-* [ ] [Token introspection](https://indieauth.spec.indieweb.org/#access-token-verification)
+* [x] [Token introspection](https://indieauth.spec.indieweb.org/#access-token-verification)
 * [ ] [Token revocation](https://indieauth.spec.indieweb.org/#token-revocation)
 
 ### User information
@@ -56,12 +56,13 @@ The following [scopes](https://indieweb.org/scope) are supported:
 * [x] [Supported queries](https://github.com/indieweb/micropub-extensions/issues/7) query
 * [x] [Supported vocabulary](https://github.com/indieweb/micropub-extensions/issues/1) query
 * [x] [Media source](https://github.com/indieweb/micropub-extensions/issues/14) query, including [filtering by URL parameter](https://github.com/indieweb/micropub-extensions/issues/37)[^1]
+* [x] [Pagination](https://github.com/indieweb/micropub-extensions/issues/48)
 * [x] [Filter](https://github.com/indieweb/micropub-extensions/issues/34) query parameter
 * [x] [Limit](https://github.com/indieweb/micropub-extensions/issues/35) query parameter
 * [x] [Offset](https://github.com/indieweb/micropub-extensions/issues/36) query parameter
 * [x] [Delete media](https://github.com/indieweb/micropub-extensions/issues/30)
 
-[^1]: A media endpoint source query includes the following properties in its [response](https://github.com/indieweb/micropub-extensions/issues/13): `content-type`, `published`, `post-type` and `url`.
+[^1]: A media endpoint source query includes the following properties in its [response](https://github.com/indieweb/micropub-extensions/issues/13): `content-type`, `media-type`, `published` and `url`.
 
 ### Server commands
 

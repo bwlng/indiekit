@@ -1,5 +1,4 @@
 import { IndiekitError } from "@indiekit/error";
-import { fetch } from "undici";
 import { findBearerToken } from "../token.js";
 import { getPostData, syndicateToTargets } from "../utils.js";
 
@@ -30,7 +29,7 @@ export const syndicateController = {
       }
 
       // Get post data
-      const postData = await getPostData(publication, sourceUrl);
+      const postData = await getPostData(application, sourceUrl);
 
       if (!postData && sourceUrl) {
         return response.json({

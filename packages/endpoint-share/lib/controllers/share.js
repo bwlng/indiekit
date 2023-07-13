@@ -1,5 +1,4 @@
 import { IndiekitError } from "@indiekit/error";
-import { fetch } from "undici";
 import { validationResult } from "express-validator";
 
 export const shareController = {
@@ -26,8 +25,8 @@ export const shareController = {
    */
   async post(request, response) {
     const { application } = request.app.locals;
-    const { content, name } = request.body;
-    const bookmarkOf = request.body.url || request.body["bookmark-of"];
+    const { content, name, url } = request.body;
+    const bookmarkOf = url || request.body["bookmark-of"];
 
     const errors = validationResult(request);
     if (!errors.isEmpty()) {

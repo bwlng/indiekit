@@ -1,5 +1,9 @@
-export { default as slugify } from "@sindresorhus/slugify";
+export {
+  formatDate as date,
+  getCanonicalUrl as url,
+  slugify,
+} from "@indiekit/util";
 export { default as widont } from "widont";
-export { date, languageName, languageNativeName } from "./locale.js";
+export { languageName, languageNativeName } from "./locale.js";
 export { excerpt, includes, linkTo, markdown } from "./string.js";
-export { absoluteUrl, friendlyUrl, imageUrl } from "./url.js";
+export { friendlyUrl, imageUrl } from "./url.js";

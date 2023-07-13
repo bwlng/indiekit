@@ -10,13 +10,13 @@ Indiekit has been tested with the following Micropub clients and supporting appl
 
 Micropub support available for [iOS, iPadOS and macOS](https://ia.net/downloads).
 
-## Indigenous
+## IndiePass
 
-![Indigenous icon](/clients/indigenous.png){.client-icon}
+![IndiePass icon](/clients/indiepass.png){.client-icon}
 
-> Indigenous allows you to engage with the internet as you do on social media sites, and post on your IndieWeb-powered website or a federated instance like Mastodon, Pleroma or Pixelfed.
+> IndiePass allows you to engage with the internet as you do on social media sites, and post on your IndieWeb-powered website or a federated instance like Mastodon, Pleroma or Pixelfed.
 
-Available for [Android, Linux, macOS and Windows](https://indiepass.marksuth.dev/downloads).
+Available for [Android, Linux, macOS and Windows](https://indiepass.app).
 
 ## OwnYourSwarm
 
@@ -32,7 +32,7 @@ Available at <https://ownyourswarm.p3k.io>.
 
 Micro.blog’s official clients can post to Micro.blog or any blog that supports the Micropub API.
 
-Available for [iOS](https://apps.apple.com/gb/app/micro-blog/id1253201335) & [macOS](https://help.micro.blog/t/micro-blog-for-mac/45).
+Available for [Android](https://play.google.com/store/apps/details?id=blog.micro.android), [iOS](https://apps.apple.com/gb/app/micro-blog/id1253201335) & [macOS](https://help.micro.blog/t/micro-blog-for-mac/45).
 
 ## Micropublish
 
@@ -41,6 +41,14 @@ Available for [iOS](https://apps.apple.com/gb/app/micro-blog/id1253201335) & [ma
 > Micropublish is a web-based Micropub client that you can use to create, update, delete and undelete content on your Micropub-enabled site.
 
 Available at <https://micropublish.net>.
+
+## Sparkles
+
+![Sparkles icon](/clients/sparkles.png){.client-icon}
+
+Sparkles is [a fully-featured Micropub client with a retro vibe](https://www.benji.dog/articles/sparkles/). It supports different post types including movie and book reviews, and can upload images to your media endpoint.
+
+Available at <https://sparkles.sploot.com> or [deployable to Netlify](https://github.com/benjifs/sparkles).
 
 ## Sunlit
 

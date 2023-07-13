@@ -1,6 +1,4 @@
-/* global Blob */
 import { validationResult } from "express-validator";
-import { FormData } from "undici";
 import { endpoint } from "../endpoint.js";
 
 export const formController = {

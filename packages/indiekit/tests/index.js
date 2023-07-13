@@ -1,3 +1,4 @@
+import process from "node:process";
 import test from "ava";
 import sinon from "sinon";
 import { testConfig } from "@indiekit-test/config";
@@ -5,7 +6,7 @@ import { Indiekit } from "../index.js";
 
 test.beforeEach(async (t) => {
   const config = await testConfig();
-  const indiekit = new Indiekit({ config });
+  const indiekit = await Indiekit.initialize({ config });
   const { application, publication } = await indiekit.bootstrap();
 
   t.context = {
@@ -79,10 +80,13 @@ test("Adds content store", (t) => {
   t.is(t.context.indiekit.publication.store.info.name, "Test");
 });
 
-test("Creates an express application", async (t) => {
-  const result = await t.context.indiekit.createApp();
+test("Exits process if no publication URL in configuration", async (t) => {
+  sinon.stub(console, "error");
+  sinon.stub(process, "exit");
+  t.context.publication.me = undefined;
+  await t.throwsAsync(t.context.indiekit.server({ port: 1234 }));
 
-  t.truthy(result.locals);
+  t.true(console.error.calledWith("No publication URL in configuration"));
 });
 
 test("Returns a server bound to given port", async (t) => {

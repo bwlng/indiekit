@@ -1,5 +1,5 @@
 import process from "node:process";
-import "dotenv/config.js"; // eslint-disable-line import/no-unassigned-import
+import "dotenv/config.js";
 import cookieSession from "cookie-session";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
@@ -31,6 +31,7 @@ export const testConfig = async (options) => {
 
   return {
     application: {
+      introspectionEndpoint: options?.application?.introspectionEndpoint,
       locale: options.locale,
       mongodbUrl: options && options.useDatabase !== false ? mongodbUrl : false,
       name: "Test configuration",
@@ -38,6 +39,7 @@ export const testConfig = async (options) => {
         name: "test",
         secret: process.env.SECRET,
       }),
+      timeZone: "UTC",
       tokenEndpoint: options?.application?.tokenEndpoint,
     },
     plugins: [
@@ -48,7 +50,6 @@ export const testConfig = async (options) => {
     publication: {
       me: options?.publication?.me || "https://website.example",
       ...(options.usePostTypes && { postTypes }),
-      timeZone: "UTC",
     },
     "@indiekit-test/store": {
       user: "user",
@@ -63,7 +64,7 @@ export const testConfig = async (options) => {
     },
     "@indiekit/syndicator-mastodon": {
       checked: true,
-      url: "https://social.example",
+      url: "https://mastodon.example",
       user: "username",
       accessToken: "abcd1234",
     },

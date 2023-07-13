@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import path from "node:path";
 import { IndiekitError } from "@indiekit/error";
 import brevity from "brevity";
@@ -7,7 +6,7 @@ import { htmlToText } from "html-to-text";
 /**
  * Get status parameters from given JF2 properties
  * @param {object} properties - A JF2 properties object
- * @param {object} [options={}] - Options
+ * @param {object} [options] - Options
  * @param {number} [options.characterLimit] - Character limit
  * @param {Array} [options.mediaIds] - Mastodon media IDs
  * @param {string} [options.serverUrl] - Server URL, i.e. https://mastodon.social
@@ -70,21 +69,6 @@ export const createStatus = (properties, options = {}) => {
 };
 
 /**
- * Get absolute URL
- * @param {string} string - URL or path
- * @param {string} me - Publication URL
- * @returns {string} Absolute URL
- */
-export const getAbsoluteUrl = (string, me) => {
-  try {
-    return new URL(string).href;
-  } catch {
-    const absoluteUrl = path.posix.join(me, string);
-    return new URL(absoluteUrl).href;
-  }
-};
-
-/**
  * Get status ID from Mastodon status URL
  * @param {string} url Mastodon status URL
  * @returns {string} Status ID
@@ -114,7 +98,7 @@ export const htmlToStatusText = (html, serverUrl) => {
   });
 
   // Get the last link mentioned, or return false
-  const lastHref = hrefs.length > 0 ? hrefs[hrefs.length - 1][1] : false;
+  const lastHref = hrefs.length > 0 ? hrefs.at(-1)[1] : false;
 
   // Convert HTML to plain text, removing any links
   const text = htmlToText(html, {
@@ -137,16 +121,4 @@ export const htmlToStatusText = (html, serverUrl) => {
   const statusText = lastHref ? `${text} ${lastHref}` : text;
 
   return statusText;
-};
-
-/**
- * Test if string is a Mastodon status URL
- * @param {string} string - Text that may be a URL
- * @param {string} serverUrl - Server URL, i.e. https://mastodon.social
- * @returns {boolean} Mastodon status URL?
- */
-export const isTootUrl = (string, serverUrl) => {
-  const parsedHostname = new URL(string).hostname;
-  const serverHostname = new URL(serverUrl).hostname;
-  return parsedHostname === serverHostname;
 };

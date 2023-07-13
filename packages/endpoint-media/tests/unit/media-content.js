@@ -1,15 +1,21 @@
 import test from "ava";
+import sinon from "sinon";
 import { mockAgent } from "@indiekit-test/mock-agent";
 import { getFixture } from "@indiekit-test/fixtures";
 import { mediaData } from "@indiekit-test/media-data";
 import { publication } from "@indiekit-test/publication";
 import { mediaContent } from "../../lib/media-content.js";
 
-await mockAgent("store");
+await mockAgent("endpoint-media");
+
+test.before(() => {
+  sinon.stub(console, "info"); // Disable console.info
+  sinon.stub(console, "warn"); // Disable console.warn
+});
 
 test.beforeEach((t) => {
   t.context.file = {
-    data: getFixture("file-types/photo.jpg", null),
+    data: getFixture("file-types/photo.jpg", false),
     name: "photo.jpg",
   };
 });

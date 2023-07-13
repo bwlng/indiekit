@@ -1,23 +1,26 @@
 import { IndiekitError } from "@indiekit/error";
-import { getPermalink, getPostTypeConfig, renderPath } from "./utils.js";
+import { getCanonicalUrl } from "@indiekit/util";
+import { getPostTypeConfig, renderPath } from "./utils.js";
 import { getFileProperties, getMediaType } from "./file.js";
 
 export const mediaData = {
   /**
    * Create media data
+   * @param {object} application - Application configuration
    * @param {object} publication - Publication configuration
    * @param {object} file - File
    * @returns {Promise<object>} Media data
    */
-  async create(publication, file) {
-    const { me, media, postTypes } = publication;
+  async create(application, publication, file) {
+    const { hasDatabase, media, timeZone } = application;
+    const { me, postTypes } = publication;
 
     // Media properties
-    const properties = await getFileProperties(publication, file);
+    const properties = await getFileProperties(timeZone, file);
 
     // Get post type configuration
     const type = await getMediaType(file);
-    properties["post-type"] = type;
+    properties["media-type"] = type;
 
     // Throw error if trying to create unsupported media
     const supportedMediaTypes = ["audio", "photo", "video"];
@@ -32,34 +35,41 @@ export const mediaData = {
     }
 
     // Media paths
-    const path = renderPath(typeConfig.media.path, properties, publication);
-    const url = renderPath(
+    const path = await renderPath(
+      typeConfig.media.path,
+      properties,
+      application
+    );
+    const url = await renderPath(
       typeConfig.media.url || typeConfig.media.path,
       properties,
-      publication
+      application
     );
-    properties.url = getPermalink(me, url);
+    properties.url = getCanonicalUrl(url, me);
 
     // Update media properties based on type configuration
     const urlPathSegment = properties.url.split("/");
-    properties.filename = urlPathSegment[urlPathSegment.length - 1];
+    properties.filename = urlPathSegment.at(-1);
     properties.basename = properties.filename.split(".")[0];
 
-    // Add data to media collection
     const mediaData = { path, properties };
-    await media.insertOne(mediaData);
+
+    // Add data to media collection (if present)
+    if (hasDatabase) {
+      await media.insertOne(mediaData);
+    }
 
     return mediaData;
   },
 
   /**
    * Read media data
-   * @param {object} publication - Publication configuration
+   * @param {object} application - Application configuration
    * @param {string} url - URL of existing media
    * @returns {Promise<object>} Media data
    */
-  async read(publication, url) {
-    const { media } = publication;
+  async read(application, url) {
+    const { media } = application;
     const query = { "properties.url": url };
 
     const mediaData = await media.findOne(query);
@@ -72,12 +82,12 @@ export const mediaData = {
 
   /**
    * Delete media data
-   * @param {object} publication - Publication configuration
+   * @param {object} application - Application configuration
    * @param {string} url - URL of existing post
    * @returns {Promise<boolean>} Media data deleted
    */
-  async delete(publication, url) {
-    const { media } = publication;
+  async delete(application, url) {
+    const { media } = application;
     const query = { "properties.url": url };
 
     const result = await media.deleteOne(query);

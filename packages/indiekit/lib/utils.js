@@ -42,38 +42,12 @@ export const decrypt = (hash, iv) => {
 };
 
 /**
- * Canonicalise URL according to IndieAuth spec
- * @param {string} url - The URL to canonicalise
- * @returns {string} The canonicalised URL
- * @see {@link https://indieauth.spec.indieweb.org/#url-canonicalization}
- */
-export const getCanonicalUrl = (url) => new URL(url).href;
-
-/**
  * Get fully resolved server URL
  * @param {import("express").Request} request - Request
  * @returns {string} Fully resolved URL
  */
 export const getUrl = (request) => {
   return `${request.protocol}://${request.headers.host}`;
-};
-
-/**
- * Check if given string is a valid URL
- * @param {object} string - URL
- * @returns {boolean} String is a URL
- */
-export const isUrl = (string) => {
-  if (typeof string !== "string") {
-    throw new TypeError("Expected a string");
-  }
-
-  try {
-    new URL(decodeURIComponent(string)); // eslint-disable-line no-new
-    return true;
-  } catch {
-    return false;
-  }
 };
 
 /**
@@ -90,11 +64,3 @@ export const getPackageData = (fileUrl) => {
     return {};
   }
 };
-
-/**
- * Generate cryptographically random string
- * @param {number} [length=21] - Length of string
- * @returns {string} Random string
- */
-export const randomString = (length = 21) =>
-  randomBytes(length).toString("hex").slice(0, length);

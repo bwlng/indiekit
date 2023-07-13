@@ -5,7 +5,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
 import { testToken } from "@indiekit-test/token";
 
-await mockAgent("store");
+await mockAgent("endpoint-media");
 
 test("Returns 403 error token has insufficient scope", async (t) => {
   const server = await testServer();
@@ -14,7 +14,7 @@ test("Returns 403 error token has insufficient scope", async (t) => {
     .post("/media")
     .auth(testToken({ scope: "foo" }), { type: "bearer" })
     .set("accept", "application/json")
-    .attach("file", getFixture("file-types/photo.jpg", null), "photo.jpg");
+    .attach("file", getFixture("file-types/photo.jpg", false), "photo.jpg");
 
   t.is(result.status, 403);
   t.is(

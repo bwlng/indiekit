@@ -1,16 +1,16 @@
 import { IndiekitError } from "@indiekit/error";
+import { getCursor } from "@indiekit/util";
 
 /**
  * Query uploaded files
  * @type {import("express").RequestHandler}
  */
 export const queryController = async (request, response, next) => {
-  const { application, publication } = request.app.locals;
+  const { application } = request.app.locals;
 
   try {
     const limit = Number(request.query.limit) || 0;
-    const offset = Number(request.query.offset) || 0;
-    const { q, url } = request.query;
+    const { after, before, q, url } = request.query;
 
     if (!q) {
       throw IndiekitError.badRequest(
@@ -28,12 +28,12 @@ export const queryController = async (request, response, next) => {
 
         if (url) {
           // Return properties for a given URL
-          const item = await publication.media.findOne(
+          const item = await application.media.findOne(
             { "properties.url": url },
             {
               projection: {
                 "properties.content-type": 1,
-                "properties.post-type": 1,
+                "properties.media-type": 1,
                 "properties.published": 1,
                 "properties.url": 1,
               },
@@ -49,22 +49,24 @@ export const queryController = async (request, response, next) => {
           response.json(item.properties);
         } else {
           // Return properties for all previously uploaded files
-          const files = await publication.media
-            .find()
-            .project({
-              "properties.content-type": 1,
-              "properties.post-type": 1,
-              "properties.published": 1,
-              "properties.url": 1,
-            })
-            .sort({ "properties.published": -1 })
-            .skip(offset)
-            .limit(limit)
-            .toArray();
+          const cursor = await getCursor(
+            application.media,
+            after,
+            before,
+            limit
+          );
 
           response.json({
-            _count: await publication.media.countDocuments(),
-            items: files.map((media) => media.properties),
+            items: cursor.items.map((post) => ({
+              "content-type": post.properties["content-type"],
+              "media-type": post.properties["media-type"],
+              published: post.properties.published,
+              url: post.properties.url,
+            })),
+            paging: {
+              ...(cursor.hasNext && { after: cursor.lastItem }),
+              ...(cursor.hasPrev && { before: cursor.firstItem }),
+            },
           });
         }
 

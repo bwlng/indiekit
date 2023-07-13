@@ -1,7 +1,6 @@
 import process from "node:process";
 import { Buffer } from "node:buffer";
 import { IndiekitError } from "@indiekit/error";
-import { fetch } from "undici";
 
 const defaults = {
   branch: "main",
@@ -11,7 +10,7 @@ const defaults = {
 
 export default class GiteaStore {
   /**
-   * @param {object} [options={}] - Plugin options
+   * @param {object} [options] - Plugin options
    * @param {string} [options.instance] - Instance URL
    * @param {string} [options.user] - Username
    * @param {string} [options.repo] - Repository
@@ -65,12 +64,12 @@ export default class GiteaStore {
   /**
    * @access private
    * @param {string} path - Request path
-   * @param {string} [method=GET] - Request method
+   * @param {string} [method] - Request method
    * @param {object} [body] - Request body
    * @returns {Promise<Response>} Gitea client interface
    */
   async #client(path, method = "GET", body) {
-    const { instance, user, repo } = this.options;
+    const { instance, user, repo, token } = this.options;
     const url = new URL(
       path,
       `${instance}/api/v1/repos/${user}/${repo}/contents/`
@@ -79,7 +78,7 @@ export default class GiteaStore {
     const response = await fetch(url.href, {
       method,
       headers: {
-        authorization: `token ${this.options.token}`,
+        authorization: `token ${token}`,
       },
       body: JSON.stringify(body),
     });

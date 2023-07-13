@@ -55,10 +55,10 @@ export const linkTo = (string, href) => {
 /**
  * Render Markdown string as HTML
  * @param {string} string - Markdown
- * @param {string} [value=null] - If 'inline', HTML rendered without paragraph tags
+ * @param {string} [value] - If 'inline', HTML rendered without paragraph tags
  * @returns {string} HTML
  */
-export const markdown = (string, value = null) => {
+export const markdown = (string, value) => {
   if (value === "inline") {
     return markdownIt.renderInline(string);
   }

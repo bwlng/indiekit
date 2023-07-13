@@ -12,7 +12,7 @@ const defaults = {
 
 export default class TwitterSyndicator {
   /**
-   * @param {object} [options={}] - Plugin options
+   * @param {object} [options] - Plugin options
    * @param {string} [options.accessToken] - Access token
    * @param {string} [options.accessTokenSecret] - Access token secret
    * @param {string} [options.apiKey] - API key
@@ -68,7 +68,7 @@ export default class TwitterSyndicator {
 
   async syndicate(properties, publication) {
     try {
-      return await twitter(this.options).post(properties, publication);
+      return await twitter(this.options).post(properties, publication.me);
     } catch (error) {
       throw new IndiekitError(error.message, {
         cause: error,

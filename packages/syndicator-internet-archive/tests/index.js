@@ -3,7 +3,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { Indiekit } from "@indiekit/indiekit";
 import InternetArchiveSyndicator from "../index.js";
 
-await mockAgent("internet-archive");
+await mockAgent("syndicator-internet-archive");
 
 const internetArchive = new InternetArchiveSyndicator({
   accessKey: "token",
@@ -24,8 +24,8 @@ test("Gets plug-in info", (t) => {
   t.truthy(internetArchive.info.service);
 });
 
-test("Initiates plug-in", (t) => {
-  const indiekit = new Indiekit();
+test("Initiates plug-in", async (t) => {
+  const indiekit = await Indiekit.initialize();
   internetArchive.init(indiekit);
 
   t.is(

@@ -1,12 +1,5 @@
 import { IndiekitError } from "@indiekit/error";
 
-/**
- * FormData interface
- * @typedef FormData
- * @property {object} FormData - Form Data
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/FormData}
- */
-
 export const endpoint = {
   /**
    * Micropub media query
@@ -35,10 +28,10 @@ export const endpoint = {
    * Micropub action
    * @param {string} url - URL
    * @param {string} accessToken - Access token
-   * @param {FormData} [formData=null] - Form data
+   * @param {FormData} [formData] - Form data
    * @returns {Promise<object>} Response data
    */
-  async post(url, accessToken, formData = null) {
+  async post(url, accessToken, formData) {
     const endpointResponse = await fetch(url, {
       method: "POST",
       headers: {

@@ -1,4 +1,4 @@
-/* global window document */
+/* eslint-disable jsdoc/no-undefined-types */
 import { Controller } from "@hotwired/stimulus";
 
 /**
@@ -102,7 +102,7 @@ export const ErrorSummaryController = class extends Controller {
    * - The first `<label>` that is associated with the input using for="inputId"
    * - The closest parent `<label>`
    * @param {HTMLElement} input - The input
-   * @returns {HTMLElement} Associated legend or label, null if none found
+   * @returns {HTMLLegendElement|HTMLLabelElement} Associated legend or label, null if none found
    */
   getAssociatedLegendOrLabel(input) {
     const fieldset = input.closest("fieldset");

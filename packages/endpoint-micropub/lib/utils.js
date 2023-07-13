@@ -1,9 +1,7 @@
 import crypto from "node:crypto";
-import path from "node:path";
+import { getServerTimeZone, supplant } from "@indiekit/util";
 import { format } from "date-fns-tz";
 import newbase60 from "newbase60";
-import slugify from "@sindresorhus/slugify";
-import { getServerTimeZone } from "./date.js";
 import { postTypeCount } from "./post-type-count.js";
 
 /**
@@ -14,13 +12,13 @@ import { postTypeCount } from "./post-type-count.js";
  * @example decodeQueryParameter('https%3A%2F%2Ffoo.bar') => 'https://foo.bar'
  */
 export const decodeQueryParameter = (string) =>
-  decodeURIComponent(string.replace(/\+/g, " "));
+  decodeURIComponent(string.replaceAll("+", " "));
 
 /**
  * Excerpt the first n words from a string
  * @param {string} string - String to excerpt
  * @param {number} n - Max number of words
- * @returns {string} Excerpt
+ * @returns {string|undefined} Excerpt
  * @example excerptString('Foo bar baz', 2) => 'Foo bar'
  */
 export const excerptString = (string, n) => {
@@ -31,44 +29,6 @@ export const excerptString = (string, n) => {
 };
 
 /**
- * Slugify a string
- * @param {string} string - String to excerpt
- * @param {string} [separator="-"] - Character used to separate words
- * @returns {string} Slugified string
- * @example slugifyString('Foo bar baz', '_') => 'foo_bar_baz'
- */
-export const slugifyString = (string, separator = "-") => {
-  if (typeof string === "string") {
-    const slug = slugify(string, {
-      customReplacements: [
-        ["'", ""],
-        ["’", ""],
-      ],
-      decamelize: false,
-      separator,
-    });
-    return slug;
-  }
-};
-
-/**
- * Derive a permalink (by combining publication URL, that may include a
- * path, with the path to a post or file
- * @param {object} url - URL
- * @param {object} pathname - Permalink path
- * @returns {string} Returns either 'photo', 'video' or audio
- * @example permalink('http://foo.bar/baz', '/qux/quux') =>
- *   'http://foo.bar/baz/qux/quux'
- */
-export const getPermalink = (url, pathname) => {
-  url = new URL(url);
-  let permalink = path.join(url.pathname, pathname);
-  permalink = new URL(permalink, url).href;
-
-  return permalink;
-};
-
-/**
  * Get post type configuration for a given type
  * @param {string} type - Post type
  * @param {object} postTypes - Publication post types
@@ -76,13 +36,6 @@ export const getPermalink = (url, pathname) => {
  */
 export const getPostTypeConfig = (type, postTypes) =>
   postTypes.find((item) => item.type === type);
-
-/**
- * Generate random alpha-numeric string, 5 characters long
- * @returns {string} Alpha-numeric string
- * @example random() => 'jb6zm'
- */
-export const randomString = () => Math.random().toString(36).slice(-5);
 
 /**
  * Render relative path if URL is on publication
@@ -97,10 +50,10 @@ export const relativeMediaPath = (url, me) =>
  * Render path from URI template and properties
  * @param {string} path - URI template path
  * @param {object} properties - Properties to use
- * @param {object} publication - Publication configuration
+ * @param {object} application - Application configuration
  * @returns {Promise<string>} Path
  */
-export const renderPath = async (path, properties, publication) => {
+export const renderPath = async (path, properties, application) => {
   const dateObject = new Date(properties.published);
   const serverTimeZone = getServerTimeZone();
   const dateTokens = [
@@ -134,9 +87,9 @@ export const renderPath = async (path, properties, publication) => {
   for (const dateToken of dateTokens) {
     tokens[dateToken] = format(dateObject, dateToken, {
       timeZone:
-        publication.timeZone === "server"
+        application.timeZone === "server"
           ? serverTimeZone
-          : publication.timeZone,
+          : application.timeZone,
       // @ts-ignore (https://github.com/marnusw/date-fns-tz/issues/239)
       useAdditionalDayOfYearTokens: true,
     });
@@ -146,7 +99,7 @@ export const renderPath = async (path, properties, publication) => {
   tokens.D60 = newbase60.DateToSxg(dateObject); // eslint-disable-line new-cap
 
   // Add count of post-type for the day
-  const count = await postTypeCount.get(publication, properties);
+  const count = await postTypeCount.get(application, properties);
   tokens.n = count + 1;
 
   // Add slug token if 'mp-slug' property
@@ -162,26 +115,6 @@ export const renderPath = async (path, properties, publication) => {
   path = supplant(path, tokens);
 
   return path;
-};
-
-/**
- * Substitute variables enclosed in { } braces with data from object
- * @param {string} string - String to parse
- * @param {object} object - Properties to use
- * @returns {string} String with substituted
- */
-export const supplant = (string, object) => {
-  const replacer = function (match, p1) {
-    const r = object[p1];
-
-    if (typeof r === "string" || typeof r === "number") {
-      return r;
-    }
-
-    return match;
-  };
-
-  return string.replace(/{([^{}]*)}/g, replacer);
 };
 
 /**

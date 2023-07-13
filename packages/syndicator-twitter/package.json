@@ -1,6 +1,6 @@
 {
   "name": "@indiekit/syndicator-twitter",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Twitter syndicator for Indiekit",
   "keywords": [
     "indiekit",
@@ -35,10 +35,10 @@
   },
   "dependencies": {
     "@indiekit/error": "^1.0.0-beta.3",
+    "@indiekit/util": "^1.0.0-beta.4",
     "brevity": "^0.2.9",
     "html-to-text": "^9.0.0",
-    "twitter-lite": "^1.1.0",
-    "undici": "^5.2.0"
+    "twitter-lite": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

@@ -14,7 +14,7 @@ import {
   normaliseProperties,
 } from "../../lib/jf2.js";
 
-await mockAgent("website");
+await mockAgent("endpoint-micropub");
 
 test.beforeEach((t) => {
   t.context = {
@@ -23,10 +23,9 @@ test.beforeEach((t) => {
       syndicationTargets: [
         {
           name: "Example social network",
-          info: { uid: "https://social.example/" },
+          info: { uid: "https://mastodon.example/" },
         },
       ],
-      timeZone: "UTC",
     },
   };
 });
@@ -84,7 +83,7 @@ test("Converts mf2 to JF2 with referenced URL data", async (t) => {
       properties: {
         content: ["I ate a cheese sandwich, which was nice."],
         category: ["foo", "bar"],
-        "bookmark-of": ["https://website.example/post.html"],
+        "bookmark-of": ["https://website.example/post"],
       },
     },
     true
@@ -94,14 +93,14 @@ test("Converts mf2 to JF2 with referenced URL data", async (t) => {
     type: "entry",
     content: "I ate a cheese sandwich, which was nice.",
     category: ["foo", "bar"],
-    "bookmark-of": "https://website.example/post.html",
+    "bookmark-of": "https://website.example/post",
     references: {
-      "https://website.example/post.html": {
+      "https://website.example/post": {
         type: "entry",
         name: "I ate a cheese sandwich, which was nice.",
         published: "2013-03-07",
         content: "I ate a cheese sandwich, which was nice.",
-        url: "https://website.example/post.html",
+        url: "https://website.example/post",
       },
     },
   });
@@ -312,7 +311,7 @@ test("Derives slug by generating random number", (t) => {
   );
   const result = getSlugProperty(properties, "-");
 
-  t.regex(result, /[\d\w]{5}/g);
+  t.regex(result, /[\w-]{5}/g);
 });
 
 test("Does not add syndication target if no syndicators", (t) => {
@@ -460,18 +459,18 @@ test("Normalises JF2 (all properties)", (t) => {
   ]);
   t.deepEqual(result.video, [{ url: "https://website.example/video.mp4" }]);
   t.deepEqual(result.category, ["lunch", "food"]);
-  t.deepEqual(result["mp-syndicate-to"], ["https://social.example"]);
+  t.deepEqual(result["mp-syndicate-to"], ["https://mastodon.example"]);
 });
 
 test("Normalises JF2 (syndication properties)", (t) => {
   const properties = JSON.parse(getFixture("jf2/all-properties.jf2"));
   delete properties["mp-syndicate-to"];
-  properties.syndication = ["https://social.example/status/1"];
+  properties.syndication = ["https://mastodon.example/status/1"];
   const result = normaliseProperties(t.context.publication, properties);
 
   t.is(result.type, "entry");
   t.is(result.name, "What I had for lunch");
-  t.is(result.syndication[0], "https://social.example/status/1");
+  t.is(result.syndication[0], "https://mastodon.example/status/1");
   t.falsy(result["mp-syndicate-to"]);
 });
 

@@ -14,8 +14,12 @@ program
   .command("serve")
   .description("start the indiekit server")
   .option("-d, --debug [scope]", "enable debugging")
-  .option("-p, --port <port>", "port to bind on", defaultConfig.server.port)
-  .action((options) => {
+  .option(
+    "-p, --port <port>",
+    "port to bind on",
+    defaultConfig.application.port
+  )
+  .action(async (options) => {
     const { debug, port } = options;
 
     if (debug) {
@@ -23,7 +27,7 @@ program
       makeDebug.enable(debug === true ? `*` : debug);
     }
 
-    const indiekit = new Indiekit({
+    const indiekit = await Indiekit.initialize({
       configFilePath: program.opts().config,
     });
 

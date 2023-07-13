@@ -12,14 +12,24 @@ import { getPostTemplate } from "./lib/post-template.js";
 import { getPostTypes } from "./lib/post-types.js";
 
 export const Indiekit = class {
-  constructor(options = {}) {
-    this.config = getIndiekitConfig({
-      config: options.config,
-      configFilePath: options.configFilePath,
-    });
+  /**
+   * @private
+   * @param {object} config - Indiekit configuration
+   */
+  constructor(config) {
+    this.config = config;
     this.application = this.config.application;
     this.plugins = this.config.plugins;
     this.publication = this.config.publication;
+  }
+
+  static async initialize(options = {}) {
+    const config = await getIndiekitConfig({
+      config: options.config,
+      configFilePath: options.configFilePath,
+    });
+
+    return new Indiekit(config);
   }
 
   addEndpoint(endpoint) {
@@ -53,16 +63,9 @@ export const Indiekit = class {
         store: new KeyvMongoDB({ db: database }),
         ttl: this.application.ttl,
       });
-      this.publication.posts = database.collection("posts");
-      this.publication.media = database.collection("media");
+      this.application.posts = database.collection("posts");
+      this.application.media = database.collection("media");
     }
-
-    // Configure image endpoint
-    // Express Sharp middleware requires that can only be provided via options
-    this.config["@indiekit/endpoint-image"] = {
-      cache: this.application.cache,
-      me: this.publication.me,
-    };
 
     // Update application configuration
     this.application.installedPlugins = await getInstalledPlugins(this);
@@ -79,15 +82,9 @@ export const Indiekit = class {
     return this;
   }
 
-  async createApp() {
-    const config = await this.bootstrap();
-    const app = expressConfig(config);
-
-    return app;
-  }
-
   async server(options = {}) {
-    const { application, publication, server } = this.config;
+    const config = await this.bootstrap();
+    const { application, publication } = config;
 
     // Check for required configuration options
     if (!publication.me) {
@@ -98,12 +95,9 @@ export const Indiekit = class {
       process.exit();
     }
 
-    // Merge options with default server configuration
-    options = { ...server, ...options };
-
     const { name, version } = application;
-    const { port } = options;
-    const app = await this.createApp();
+    const port = options.port || application.port;
+    const app = expressConfig(config);
 
     return app.listen(port, () => {
       console.info(`Starting ${name} (v${version}) on port ${port}`);

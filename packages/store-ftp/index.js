@@ -17,7 +17,7 @@ const defaults = {
  */
 export default class FtpStore {
   /**
-   * @param {object} [options={}] - Plugin options
+   * @param {object} [options] - Plugin options
    * @param {string} [options.host] - FTP hostname
    * @param {string} [options.user] - FTP username
    * @param {string} [options.password] - FTP password
@@ -83,7 +83,7 @@ export default class FtpStore {
     const readableStream = new Readable();
     readableStream._read = () => {};
     readableStream.push(content, "utf8");
-    readableStream.push(null); // eslint-disable-line unicorn/no-array-push-push
+    readableStream.push(undefined); // eslint-disable-line unicorn/no-array-push-push
     return readableStream;
   }
 

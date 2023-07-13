@@ -5,7 +5,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
 import { testToken } from "@indiekit-test/token";
 
-await mockAgent("store");
+await mockAgent("endpoint-media");
 
 test("Deletes file", async (t) => {
   // Create post
@@ -15,7 +15,7 @@ test("Deletes file", async (t) => {
     .post("/media")
     .auth(testToken(), { type: "bearer" })
     .set("accept", "application/json")
-    .attach("file", getFixture("file-types/photo.jpg", null), "photo.jpg");
+    .attach("file", getFixture("file-types/photo.jpg", false), "photo.jpg");
 
   // Delete post
   const result = await request

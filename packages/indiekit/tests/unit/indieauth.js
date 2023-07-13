@@ -6,7 +6,7 @@ import mockReqRes from "mock-req-res";
 import { mockAgent } from "@indiekit-test/mock-agent";
 import { IndieAuth } from "../../lib/indieauth.js";
 
-await mockAgent("token-endpoint");
+await mockAgent("indiekit");
 
 const { mockRequest, mockResponse } = mockReqRes;
 const indieauth = new IndieAuth({
@@ -57,7 +57,7 @@ test("Checks if user is authenticated", async (t) => {
     app: {
       locals: {
         application: {
-          tokenEndpoint: "https://token-endpoint.example",
+          introspectionEndpoint: "https://token-endpoint.example/introspect",
         },
       },
     },
@@ -84,7 +84,7 @@ test("Development mode bypasses authentication", async (t) => {
     app: {
       locals: {
         application: {
-          tokenEndpoint: "https://token-endpoint.example",
+          introspectionEndpoint: "https://token-endpoint.example/introspect",
         },
       },
     },
@@ -105,7 +105,7 @@ test("Throws error authenticating invalid token", async (t) => {
     app: {
       locals: {
         application: {
-          tokenEndpoint: "https://token-endpoint.example",
+          introspectionEndpoint: "https://token-endpoint.example/introspect",
         },
       },
     },
@@ -130,7 +130,7 @@ test("Throws error authenticating token with URL mismatch", async (t) => {
     app: {
       locals: {
         application: {
-          tokenEndpoint: "https://token-endpoint.example",
+          introspectionEndpoint: "https://token-endpoint.example/introspect",
         },
       },
     },

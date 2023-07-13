@@ -1,4 +1,5 @@
-import { isUrl, getUrl } from "./utils.js";
+import { isUrl } from "@indiekit/util";
+import { getUrl } from "./utils.js";
 
 /**
  * Get endpoint URLs from application configuration or default plug-ins
@@ -11,21 +12,21 @@ export const getEndpoints = (application, request) => {
 
   for (const endpoint of [
     "authorizationEndpoint",
+    "introspectionEndpoint",
     "mediaEndpoint",
     "micropubEndpoint",
     "tokenEndpoint",
   ]) {
-    // Use endpoint URL in application config
-    if (application[endpoint] && isUrl(application[endpoint])) {
-      endpoints[endpoint] = application[endpoint];
-    } else {
-      // Else, use private path value provided by default endpoint plug-in
-      // to construct a fully resolvable URL mounted on application URL
-      endpoints[endpoint] = new URL(
-        application[`_${endpoint}Path`],
-        getUrl(request)
-      ).href;
-    }
+    endpoints[endpoint] =
+      application[endpoint] && isUrl(application[endpoint])
+        ? // Use endpoint URL in application config
+          application[endpoint]
+        : // Else, use private path value provided by default endpoint plug-in
+          // to construct a fully resolvable URL mounted on application URL
+          (endpoints[endpoint] = new URL(
+            application[`_${endpoint}Path`],
+            getUrl(request)
+          ).href);
   }
 
   return endpoints;

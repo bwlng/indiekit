@@ -10,14 +10,14 @@ import { uploadMedia } from "../media.js";
  * @type {import("express").RequestHandler}
  */
 export const actionController = async (request, response, next) => {
-  const { body, files, query } = request;
+  const { app, body, files, query, session } = request;
   const action = query.action || body.action || "create";
   const url = query.url || body.url;
-  const { application, publication } = request.app.locals;
+  const { application, publication } = app.locals;
 
   try {
     // Check provided scope
-    const { scope, token } = request.session;
+    const { scope, token } = session;
     const hasScope = checkScope(scope, action);
     if (!hasScope) {
       throw IndiekitError.insufficientScope(
@@ -51,7 +51,7 @@ export const actionController = async (request, response, next) => {
           ? await uploadMedia(application.mediaEndpoint, token, jf2, files)
           : jf2;
 
-        data = await postData.create(publication, jf2, draftMode);
+        data = await postData.create(application, publication, jf2, draftMode);
         content = await postContent.create(publication, data);
         break;
       }
@@ -67,7 +67,7 @@ export const actionController = async (request, response, next) => {
           );
         }
 
-        data = await postData.update(publication, url, body);
+        data = await postData.update(application, publication, url, body);
 
         // Draft mode: Only update posts that have `draft` post status
         if (draftMode && data.properties["post-status"] !== "draft") {
@@ -82,13 +82,18 @@ export const actionController = async (request, response, next) => {
       }
 
       case "delete": {
-        data = await postData.delete(publication, url);
+        data = await postData.delete(application, publication, url);
         content = await postContent.delete(publication, data);
         break;
       }
 
       case "undelete": {
-        data = await postData.undelete(publication, url, draftMode);
+        data = await postData.undelete(
+          application,
+          publication,
+          url,
+          draftMode
+        );
         content = await postContent.undelete(publication, data);
         break;
       }

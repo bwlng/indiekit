@@ -4,7 +4,7 @@ import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
 import { testToken } from "@indiekit-test/token";
 
-await mockAgent("store");
+await mockAgent("endpoint-syndicate");
 
 test("Returns no syndication targets configured", async (t) => {
   const server = await testServer();
@@ -15,7 +15,7 @@ test("Returns no syndication targets configured", async (t) => {
     .set("accept", "application/json")
     .send("h=entry")
     .send("name=foobar")
-    .send("mp-syndicate-to=https://twitter.com/username");
+    .send("mp-syndicate-to=https://mastodon.example/@username");
   const result = await request
     .post("/syndicate")
     .query({ token: testToken() })

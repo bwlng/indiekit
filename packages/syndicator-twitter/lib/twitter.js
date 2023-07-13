@@ -1,13 +1,7 @@
-/* eslint-disable camelcase */
 import { Buffer } from "node:buffer";
-import { fetch } from "undici";
+import { getCanonicalUrl, isSameOrigin } from "@indiekit/util";
 import Twitter from "twitter-lite";
-import {
-  createStatus,
-  getAbsoluteUrl,
-  getStatusIdFromUrl,
-  isTweetUrl,
-} from "./utils.js";
+import { createStatus, getStatusIdFromUrl } from "./utils.js";
 
 export const twitter = (options) => ({
   client: (subdomain = "api") =>
@@ -90,7 +84,7 @@ export const twitter = (options) => ({
     }
 
     try {
-      const mediaUrl = getAbsoluteUrl(url, me);
+      const mediaUrl = getCanonicalUrl(url, me);
       const response = await fetch(mediaUrl);
 
       if (!response.ok) {
@@ -121,10 +115,10 @@ export const twitter = (options) => ({
   /**
    * Post to Twitter
    * @param {object} properties - JF2 properties object
-   * @param {object} publication - Publication configuration
+   * @param {string} me - Publication URL
    * @returns {Promise<string|boolean>} URL of syndicated tweet
    */
-  async post(properties, publication) {
+  async post(properties, me) {
     let mediaIds = [];
 
     // Upload photos
@@ -134,7 +128,7 @@ export const twitter = (options) => ({
       // Trim to 4 photos as Twitter doesn’t support more
       const photos = properties.photo.slice(0, 4);
       for await (const photo of photos) {
-        uploads.push(this.uploadMedia(photo, publication.me));
+        uploads.push(this.uploadMedia(photo, me));
       }
 
       mediaIds = await Promise.all(uploads);
@@ -142,13 +136,16 @@ export const twitter = (options) => ({
 
     if (properties["repost-of"]) {
       // Syndicate repost of Twitter URL with content as a quote tweet
-      if (isTweetUrl(properties["repost-of"]) && properties.content) {
+      if (
+        isSameOrigin(properties["repost-of"], "https://twitter.com") &&
+        properties.content
+      ) {
         const status = createStatus(properties, mediaIds);
         return this.postStatus(status);
       }
 
       // Syndicate repost of Twitter URL as a retweet
-      if (isTweetUrl(properties["repost-of"])) {
+      if (isSameOrigin(properties["repost-of"], "https://twitter.com")) {
         return this.postRetweet(properties["repost-of"]);
       }
 
@@ -158,7 +155,7 @@ export const twitter = (options) => ({
 
     if (properties["like-of"]) {
       // Syndicate like of Twitter URL as a like
-      if (isTweetUrl(properties["like-of"])) {
+      if (isSameOrigin(properties["like-of"], "https://twitter.com")) {
         return this.postLike(properties["like-of"]);
       }
 

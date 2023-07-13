@@ -1,3 +1,4 @@
+import { randomString, slugify } from "@indiekit/util";
 import { mf2tojf2, mf2tojf2referenced } from "@paulrobertlloyd/mf2tojf2";
 import { markdownToHtml, htmlToMarkdown } from "./markdown.js";
 import { reservedProperties } from "./reserved-properties.js";
@@ -5,8 +6,6 @@ import {
   decodeQueryParameter,
   excerptString,
   relativeMediaPath,
-  randomString,
-  slugifyString,
   toArray,
 } from "./utils.js";
 
@@ -167,7 +166,7 @@ export const getLocationProperty = (properties) => {
 
   if (typeof location === "string" && location.startsWith("geo:")) {
     const geoUriRegexp =
-      /geo:(?<latitude>[-?\d+.]*),(?<longitude>[-?\d+.]*)(?:,(?<altitude>[-?\d+.]*))?(?:(?:;name=(?<name>[^;]*))|(?:;url=(?<url>[^;]*)))*$/;
+      /geo:(?<latitude>[\d+.?-]*),(?<longitude>[\d+.?-]*)(?:,(?<altitude>[\d+.?-]*))?(?:(?:;name=(?<name>[^;]*))|(?:;url=(?<url>[^;]*)))*$/;
     const { latitude, longitude, altitude, name, url } =
       location.match(geoUriRegexp).groups;
 
@@ -239,17 +238,17 @@ export const getSlugProperty = (properties, separator) => {
   } else if (name) {
     string = excerptString(name, 5);
   } else {
-    string = randomString();
+    string = randomString(5);
   }
 
-  return slugifyString(string, separator);
+  return slugify(string, separator);
 };
 
 /**
  * Get mp-syndicate-to property
  * @param {object} properties - JF2 properties
  * @param {Array} syndicationTargets - Configured syndication targets
- * @returns {Array} Resolved syndication targets
+ * @returns {Array|undefined} Resolved syndication targets
  */
 export const getSyndicateToProperty = (properties, syndicationTargets) => {
   const property = [];

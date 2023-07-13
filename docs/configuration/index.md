@@ -1,11 +1,12 @@
 # Options
 
-Indiekit uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) to find and load a configuration file. Starting from the current working directory, it looks for the following possible sources:
+Indiekit uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to find and load a configuration file.
+
+Starting from the current working directory, it looks for the following possible sources:
 
 - a `indiekit` property in `package.json`
 - a `.indiekitrc` file
 - a `indiekit.config.js` file exporting a JavaScript object
-- a `indiekit.config.cjs` file exporting a JavaScript object (in projects that specify `"type":"module"` in `package.json`)
 
 The search stops when one of these is found, and Indiekit uses that object. You can use the `--config` CLI option to short-circuit the search.
 
@@ -26,7 +27,21 @@ _Optional_, defaults to `"[application.url]/auth"`. For example:
 ```json
 {
   "application": {
-    "authorizationEndpoint": "https://indieauth.com/auth"
+    "authorizationEndpoint": "https://server.example/auth"
+  }
+}
+```
+
+### application.introspectionEndpoint `URL`
+
+Indiekit uses its own token introspection endpoint, but you can use a third-party service by setting a value for this option.
+
+_Optional_, defaults to `"[application.url]/auth/introspect"`. For example:
+
+```json
+{
+  "application": {
+    "authorizationEndpoint": "https://server.example/introspect"
   }
 }
 ```
@@ -56,7 +71,7 @@ _Optional_, defaults to `"[application.url]/media"`. For example:
 ```json
 {
   "application": {
-    "mediaEndpoint": "https://website.example/media"
+    "mediaEndpoint": "https://server.example/media"
   }
 }
 ```
@@ -70,7 +85,7 @@ _Optional_, defaults to `"[application.url]/micropub"`. For example:
 ```json
 {
   "application": {
-    "micropubEndpoint ": "https://website.example/micropub"
+    "micropubEndpoint": "https://server.example/micropub"
   }
 }
 ```
@@ -90,6 +105,20 @@ _Optional_, defaults to `process.env.MONGO_URL`. For example:
 ```
 
 <!--@include: .option-contains-secrets.md-->
+
+### application.port `number`
+
+Port for application server to listen on.
+
+_Optional_, defaults to `3000`. For example:
+
+```json
+{
+  "application": {
+    "port": 1234
+  }
+}
+```
 
 ### application.name `string`
 
@@ -133,6 +162,22 @@ _Optional_, defaults to `"automatic"`. For example:
 }
 ```
 
+### application.timeZone `string`
+
+The time zone for the application. By default this is set to `"UTC"`, however if you want to offset dates according to your time zone you can provide [a time zone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This option also accepts a number of other values.
+
+_Optional_, defaults to `"UTC"`. For example:
+
+```json
+{
+  "application": {
+    "timeZone": "Europe/Berlin"
+  }
+}
+```
+
+See [customising the time zone →](time-zone.md)
+
 ### application.tokenEndpoint `URL`
 
 Indiekit uses its own token endpoint, but you can use a third-party service by setting a value for this option.
@@ -142,7 +187,7 @@ _Optional_, defaults to `"[application.url]/auth/token"`. For example:
 ```json
 {
   "application": {
-    "tokenEndpoint": "https://tokens.indieauth.com/token"
+    "tokenEndpoint": "https://server.example/token"
   }
 }
 ```
@@ -383,19 +428,3 @@ export default {
 <!--@include: .option-requires-js.md-->
 
 See [customising commit messages →](commit-messages.md)
-
-### publication.timeZone `string`
-
-The time zone for your publication. By default this is set to `"UTC"`, however if you want to offset dates according to your time zone you can provide [a time zone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This option also accepts a number of other values.
-
-_Optional_, defaults to `"UTC"`. For example:
-
-```json
-{
-  "publication": {
-    "timeZone": "Europe/Berlin"
-  }
-}
-```
-
-See [customising the time zone →](time-zone.md)

@@ -1,10 +1,9 @@
+import { getDate, randomString } from "@indiekit/util";
 import { fileTypeFromBuffer } from "file-type";
-import { getDate } from "./date.js";
-import { randomString } from "./utils.js";
 
 /**
  * Derive properties from file data
- * @param {object} publication - Publication configuration
+ * @param {object} timeZone - Application time zone
  * @param {object} file - Original file object
  * @returns {Promise<object>} File properties
  * @example fileData('brighton-pier.jpg') => {
@@ -16,10 +15,8 @@ import { randomString } from "./utils.js";
  *   published: '2020-07-19T22:59:23.497Z',
  * }
  */
-export const getFileProperties = async (publication, file) => {
-  const { timeZone } = publication;
-
-  const basename = randomString();
+export const getFileProperties = async (timeZone, file) => {
+  const basename = randomString(5).toLowerCase();
   const { ext, mime } = await fileTypeFromBuffer(file.data);
   const published = getPublishedProperty(timeZone);
 

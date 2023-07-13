@@ -55,7 +55,7 @@
         "dark": "Ciemny",
         "light": "Jasny"
       },
-      "tokenEndpoint": "Punkt końcowy tokena",
+      "timeZone": "Strefa czasowa",
       "version": "Wersja"
     },
     "publication": {
@@ -65,8 +65,7 @@
       "preset": "Szablon",
       "store": "Sklep z treściami",
       "summaryTitle": "Ustawienia publikacji",
-      "syndicationTargets": "Cele syndykacji",
-      "timeZone": "Strefa czasowa"
+      "syndicationTargets": "Cele syndykacji"
     },
     "title": "Status serwera"
   }

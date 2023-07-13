@@ -14,8 +14,8 @@ test("Gets plug-in info", (t) => {
   t.is(jekyll.info.name, "Jekyll");
 });
 
-test("Initiates plug-in", (t) => {
-  const indiekit = new Indiekit();
+test("Initiates plug-in", async (t) => {
+  const indiekit = await Indiekit.initialize();
   jekyll.init(indiekit);
 
   t.is(indiekit.publication.preset.info.name, "Jekyll");
@@ -61,6 +61,7 @@ test("Renders post template with basic content", (t) => {
 date: 2020-02-02
 title: Lunchtime
 ---
+
 I ate a [cheese](https://en.wikipedia.org/wiki/Cheese) sandwich, which was nice.
 `
   );
@@ -81,6 +82,7 @@ test("Renders post template with HTML content", (t) => {
 date: 2020-02-02
 title: Lunchtime
 ---
+
 <p>I ate a <a href="https://en.wikipedia.org/wiki/Cheese">cheese</a> sandwich, which was nice.</p>
 `
   );
@@ -126,6 +128,7 @@ published: false
 visibility: private
 syndication: https://website.example/post/12345
 ---
+
 I ate a [cheese](https://en.wikipedia.org/wiki/Cheese) sandwich, which was nice.
 `
   );

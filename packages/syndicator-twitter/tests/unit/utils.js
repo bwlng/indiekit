@@ -3,10 +3,8 @@ import { IndiekitError } from "@indiekit/error";
 import { getFixture } from "@indiekit-test/fixtures";
 import {
   createStatus,
-  getAbsoluteUrl,
   getStatusIdFromUrl,
   htmlToStatusText,
-  isTweetUrl,
 } from "../../lib/utils.js";
 
 test.beforeEach((t) => {
@@ -103,28 +101,6 @@ test("Creates a status with a photo", (t) => {
 
   t.is(result.status, "Here’s the cheese sandwich I ate.");
   t.is(result.media_ids, "1,2,3,4");
-});
-
-test("Tests if string is a tweet permalink", (t) => {
-  t.true(
-    isTweetUrl("https://twitter.com/paulrobertlloyd/status/1341502435760680961")
-  );
-  t.false(isTweetUrl("https://getindiekit.com"));
-});
-
-test("Gets absolute URL", (t) => {
-  const result = getAbsoluteUrl(
-    `${t.context.me}/media/photo.jpg`,
-    t.context.me
-  );
-
-  t.is(result, `${t.context.me}/media/photo.jpg`);
-});
-
-test("Gets absolute URL by prepending publication URL", (t) => {
-  const result = getAbsoluteUrl("/media/photo.jpg", t.context.me);
-
-  t.is(result, `${t.context.me}/media/photo.jpg`);
 });
 
 test("Gets status ID from Twitter permalink", (t) => {
