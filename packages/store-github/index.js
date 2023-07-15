@@ -65,8 +65,8 @@ export default class GithubStore {
     const { baseUrl, user, repo, token } = this.options;
     const url = new URL(path, `${baseUrl}/repos/${user}/${repo}/contents/`);
     const accept = isLargeFile
-      ? "application/vnd.github+json"
-      : "application/vnd.github.raw";
+      ? "application/vnd.github.raw"
+      : "application/vnd.github+json";
 
     try {
       const response = await fetch(url.href, {
