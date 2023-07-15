@@ -58,17 +58,21 @@ export default class GithubStore {
    * @param {string} path - Request path
    * @param {string} [method] - Request method
    * @param {object} [body] - Request body
+   * @param {boolean} [isLargeFile] - Is file larger than 1MB
    * @returns {Promise<Response>} GitHub client interface
    */
-  async #client(path, method = "GET", body) {
+  async #client(path, method = "GET", body, isLargeFile = false) {
     const { baseUrl, user, repo, token } = this.options;
     const url = new URL(path, `${baseUrl}/repos/${user}/${repo}/contents/`);
+    const accept = isLargeFile
+      ? "application/vnd.github+json"
+      : "application/vnd.github.raw";
 
     try {
       const response = await fetch(url.href, {
         method,
         headers: {
-          accept: "application/vnd.github+json",
+          accept,
           authorization: `token ${token}`,
         },
         body: JSON.stringify(body),
@@ -97,13 +101,20 @@ export default class GithubStore {
    * @see {@link https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents}
    */
   async createFile(path, content, message) {
-    content = Buffer.from(content).toString("base64");
+    const file = Buffer.from(content);
+    const sizeInMB = file.byteLength / 1_000_000;
+    const isLargeFile = sizeInMB > 1;
 
-    await this.#client(path, "PUT", {
-      branch: this.options.branch,
-      content,
-      message,
-    });
+    await this.#client(
+      path,
+      "PUT",
+      {
+        branch: this.options.branch,
+        content: file.toString("base64"),
+        message,
+      },
+      isLargeFile
+    );
 
     return true;
   }
