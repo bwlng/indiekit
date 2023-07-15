@@ -7,13 +7,14 @@ import { mf2 } from "microformats-parser";
  */
 export const getClientInformation = async (client_id) => {
   const hostname = new URL(client_id).host;
+  const clientInformation = {
+    name: hostname,
+    url: client_id,
+  };
 
   const clientResponse = await fetch(client_id);
   if (!clientResponse.ok) {
-    return {
-      name: hostname,
-      url: client_id,
-    };
+    return clientInformation;
   }
 
   const body = await clientResponse.text();
@@ -26,9 +27,11 @@ export const getClientInformation = async (client_id) => {
 
       return {
         ...(logo && { logo: logo[0]?.value || logo[0] }),
-        name: name[0],
-        url: client_id,
+        name: name[0] || clientInformation.name,
+        url: clientInformation.url,
       };
     }
   }
+
+  return clientInformation;
 };
