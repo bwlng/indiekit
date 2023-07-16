@@ -24,6 +24,7 @@ export const mediaContent = {
       json: {
         success: "create",
         success_description: `Media uploaded to ${mediaData.properties.url}`,
+        url: mediaData.properties.url,
       },
     };
   },
