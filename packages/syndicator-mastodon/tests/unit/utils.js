@@ -7,13 +7,6 @@ import {
   htmlToStatusText,
 } from "../../lib/utils.js";
 
-test.beforeEach((t) => {
-  t.context = {
-    me: "https://website.example",
-    tootUrl: "https://mastodon.example/@username/1234567890987654321",
-  };
-});
-
 test("Creates a status with article post name and URL", (t) => {
   const result = createStatus(
     JSON.parse(getFixture("jf2/article-content-provided-html-text.jf2")),
@@ -73,7 +66,7 @@ test("Creates a reblog with status URL and post content", (t) => {
 
   t.is(
     result.status,
-    `Someone else who likes cheese sandwiches. ${t.context.tootUrl}`
+    `Someone else who likes cheese sandwiches. https://mastodon.example/@username/1234567890987654321`
   );
 });
 
@@ -86,7 +79,7 @@ test("Adds link to status post is in reply to", (t) => {
   );
 
   t.is(result.status, "I ate a cheese sandwich too!");
-  t.is(result.in_reply_to_status_id, "1234567890987654321");
+  t.is(result.inReplyToId, "1234567890987654321");
 });
 
 test("Throws creating a status if post is off-service reply", (t) => {
@@ -117,7 +110,7 @@ test("Creates a status with a photo", (t) => {
   );
 
   t.is(result.status, "Here’s the cheese sandwich I ate.");
-  t.deepEqual(result.media_ids, ["1", "2", "3", "4"]);
+  t.deepEqual(result.mediaIds, ["1", "2", "3", "4"]);
 });
 
 test("Gets status ID from Mastodon permalink", (t) => {

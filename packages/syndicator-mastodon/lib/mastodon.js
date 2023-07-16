@@ -1,34 +1,38 @@
+import { IndiekitError } from "@indiekit/error";
 import { getCanonicalUrl, isSameOrigin } from "@indiekit/util";
-import axios from "axios";
-import megalodon from "megalodon";
+import { login } from "masto";
 import { createStatus, getStatusIdFromUrl } from "./utils.js";
 
 export const mastodon = ({ accessToken, characterLimit, serverUrl }) => ({
-  client() {
-    const generator = megalodon.default;
-    return generator("mastodon", serverUrl, accessToken);
+  async client() {
+    return login({
+      accessToken: accessToken,
+      url: serverUrl,
+    });
   },
 
   /**
    * Post a favourite
-   * @param {string} tootUrl - URL of toot to favourite
+   * @param {string} statusUrl - URL of status to favourite
    * @returns {Promise<string>} Mastodon status URL
    */
-  async postFavourite(tootUrl) {
-    const statusId = getStatusIdFromUrl(tootUrl);
-    const { data } = await this.client().favouriteStatus(statusId);
-    return data.url;
+  async postFavourite(statusUrl) {
+    const { v1 } = await this.client();
+    const statusId = getStatusIdFromUrl(statusUrl);
+    const status = await v1.statuses.favourite(statusId);
+    return status.url;
   },
 
   /**
    * Post a reblog
-   * @param {string} tootUrl - URL of toot to reblog
+   * @param {string} statusUrl - URL of status to reblog
    * @returns {Promise<string>} Mastodon status URL
    */
-  async postReblog(tootUrl) {
-    const statusId = getStatusIdFromUrl(tootUrl);
-    const { data } = await this.client().reblogStatus(statusId);
-    return data.url;
+  async postReblog(statusUrl) {
+    const { v1 } = await this.client();
+    const statusId = getStatusIdFromUrl(statusUrl);
+    const status = await v1.statuses.reblog(statusId);
+    return status.url;
   },
 
   /**
@@ -37,11 +41,9 @@ export const mastodon = ({ accessToken, characterLimit, serverUrl }) => ({
    * @returns {Promise<string>} Mastodon status URL
    */
   async postStatus(parameters) {
-    const { data } = await this.client().postStatus(parameters.status, {
-      in_reply_to_id: parameters.in_reply_to_status_id,
-      media_ids: parameters.media_ids,
-    });
-    return data.url;
+    const { v1 } = await this.client();
+    const status = await v1.statuses.create(parameters);
+    return status.url;
   },
 
   /**
@@ -59,15 +61,22 @@ export const mastodon = ({ accessToken, characterLimit, serverUrl }) => ({
 
     try {
       const mediaUrl = getCanonicalUrl(url, me);
-      const response = await axios(mediaUrl, {
-        responseType: "stream",
-      });
-      const { data } = await this.client().uploadMedia(response.data, {
+      const mediaResponse = await fetch(mediaUrl);
+
+      if (!mediaResponse.ok) {
+        throw await IndiekitError.fromFetch(mediaResponse);
+      }
+
+      const { v2 } = await this.client();
+      const blob = await mediaResponse.blob();
+      const attachment = await v2.mediaAttachments.create({
+        file: new Blob([blob]),
         description: alt,
       });
-      return data.id;
+
+      return attachment.id;
     } catch (error) {
-      const message = error.response?.data?.error || error.message;
+      const message = error.message;
       throw new Error(message);
     }
   },
@@ -75,10 +84,10 @@ export const mastodon = ({ accessToken, characterLimit, serverUrl }) => ({
   /**
    * Post to Mastodon
    * @param {object} properties - JF2 properties object
-   * @param {object} publication - Publication configuration
-   * @returns {Promise<string|boolean>} URL of syndicated toot
+   * @param {string} me - Publication URL
+   * @returns {Promise<string|boolean>} URL of syndicated status
    */
-  async post(properties, publication) {
+  async post(properties, me) {
     let mediaIds = [];
 
     // Upload photos
@@ -88,7 +97,7 @@ export const mastodon = ({ accessToken, characterLimit, serverUrl }) => ({
       // Trim to 4 photos as Mastodon doesn’t support more
       const photos = properties.photo.slice(0, 4);
       for await (const photo of photos) {
-        uploads.push(this.uploadMedia(photo, publication.me));
+        uploads.push(this.uploadMedia(photo, me));
       }
 
       mediaIds = await Promise.all(uploads);

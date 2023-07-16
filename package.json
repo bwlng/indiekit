@@ -70,7 +70,7 @@
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-jsdoc": "^46.0.0",
-    "eslint-plugin-unicorn": "^47.0.0",
+    "eslint-plugin-unicorn": "^48.0.0",
     "jsdom": "^22.0.0",
     "lint-staged": "^13.1.0",
     "markdown-it-anchor": "^8.6.6",
@@ -88,8 +88,7 @@
     "stylelint-config-recommended": "^13.0.0",
     "stylelint-order": "^6.0.0",
     "supertest": "^6.1.6",
-    "vitepress": "^1.0.0-beta",
-    "vue": "^3.2.41"
+    "vitepress": "^1.0.0-beta"
   },
   "ava": {
     "workerThreads": false

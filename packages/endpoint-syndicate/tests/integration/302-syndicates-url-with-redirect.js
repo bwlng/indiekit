@@ -1,5 +1,4 @@
 import test from "ava";
-import nock from "nock";
 import supertest from "supertest";
 import { mockAgent } from "@indiekit-test/mock-agent";
 import { testServer } from "@indiekit-test/server";
@@ -8,10 +7,6 @@ import { testToken } from "@indiekit-test/token";
 await mockAgent("endpoint-syndicate");
 
 test("Syndicates a URL and redirects", async (t) => {
-  nock("https://mastodon.example").post("/api/v1/statuses").reply(200, {
-    url: "https://mastodon.example/@username/1234567890987654321",
-  });
-
   const server = await testServer({
     plugins: ["@indiekit/syndicator-mastodon"],
   });
@@ -22,7 +17,7 @@ test("Syndicates a URL and redirects", async (t) => {
     .set("accept", "application/json")
     .send("h=entry")
     .send("name=foobar")
-    .send("mp-syndicate-to=https://social.com/@username");
+    .send("mp-syndicate-to=https://mastodon.example/@username");
   const result = await request
     .post("/syndicate")
     .set("accept", "application/json")
