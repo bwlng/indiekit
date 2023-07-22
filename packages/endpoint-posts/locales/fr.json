@@ -8,7 +8,7 @@
       "action": "Supprimer la publication",
       "cancel": "Non – retourner à la publication",
       "submit": "Je suis sûr – supprimer cette publication",
-      "title": "Êtes-vous sûr de vouloir supprimer cette publication ?"
+      "title": "Êtes-vous sûr de vouloir supprimer cette publication ?"
     },
     "error": {
       "bookmark-of": {
@@ -35,6 +35,7 @@
     },
     "form": {
       "advancedOptions": "Options avancées",
+      "back": "Modifier le type de publication",
       "bookmark-of": {
         "label": "Signet de"
       },
@@ -45,6 +46,7 @@
       "content": {
         "label": "Contenu"
       },
+      "continue": "Continuer",
       "geo": {
         "hint": "Latitude et longitude, par exemple %s",
         "label": "Coordonnées de localisation"
@@ -53,10 +55,10 @@
         "label": "En réponse à"
       },
       "like-of": {
-        "label": "J'aime"
+        "label": "J’aime"
       },
       "mp-slug": {
-        "label": "URL d'entrée"
+        "label": "URL d’entrée"
       },
       "mp-syndicate-to": {
         "label": "Publier également sur"
@@ -85,12 +87,15 @@
         "label": "Visibilité"
       }
     },
+    "new": {
+      "title": "Quel type de publication souhaitez-vous créer ?"
+    },
     "post": {
       "properties": "Propriétés",
       "syndicate": "Distribuer le post"
     },
     "posts": {
-      "none": "Pas d'articles",
+      "none": "Aucune publication",
       "title": "Articles publiés"
     },
     "status": {
@@ -106,7 +111,7 @@
     "undelete": {
       "action": "Restaurer la publication",
       "submit": "Je suis sûr – restaurer cette publication",
-      "title": "Êtes-vous sûr de vouloir restaurer cette publication ?"
+      "title": "Êtes-vous sûr de vouloir restaurer cette publication ?"
     },
     "update": {
       "action": "Modifier la publication",

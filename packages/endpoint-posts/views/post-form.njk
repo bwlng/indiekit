@@ -157,6 +157,8 @@
     summary: __("posts.form.advancedOptions")
   }) %}
     {{ tokenInput({
+      id: "category",
+      name: "category",
       value: errors.category.value or post.category,
       label: {
         text: __("posts.form.category.label")
@@ -246,7 +248,7 @@
     }) | indent(4) if postStatus !== "published" }}
 
     {{ prose({
-      text: "[" + __("posts.form.cancel") + "](" + back + ")"
+      text: "[" + __("posts.form.cancel") + "](" + postsPath + ")"
     }) | indent(4) }}
   </div>
 {% endblock %}
