@@ -1,5 +1,7 @@
 import { getDate, randomString } from "@indiekit/util";
 import { fileTypeFromBuffer } from "file-type";
+import sharp from "sharp";
+import ExifParser from "exif-parser";
 
 /**
  * Derive properties from file data
@@ -58,4 +60,55 @@ export const getPublishedProperty = (timeZone) => {
   const dateString = new Date().toISOString();
   const property = getDate(timeZone, dateString);
   return property;
+};
+
+export const correctImageOrientation = async (file) => {
+  try {
+    const exifData = ExifParser.create(file.data).parse();
+    const orientation = exifData.tags.Orientation;
+
+    const image = sharp(file.data);
+
+    if (orientation && orientation !== 1) {
+      switch (orientation) {
+        case 2: {
+          image.flip();
+          break;
+        }
+        case 3: {
+          image.rotate(180);
+          break;
+        }
+        case 4: {
+          image.flop();
+          break;
+        }
+        case 5: {
+          image.flip().rotate(90);
+          break;
+        }
+        case 6: {
+          image.rotate(90);
+          break;
+        }
+        case 7: {
+          image.flip().rotate(270);
+          break;
+        }
+        case 8: {
+          image.rotate(270);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }
+
+    file.data = await image.toBuffer();
+
+    return file;
+  } catch {
+    return file;
+  }
 };

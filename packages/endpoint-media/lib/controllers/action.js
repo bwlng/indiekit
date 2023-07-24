@@ -2,6 +2,7 @@ import { IndiekitError } from "@indiekit/error";
 import { mediaContent } from "../media-content.js";
 import { mediaData } from "../media-data.js";
 import { checkScope } from "../scope.js";
+import { getMediaType, correctImageOrientation } from "../file.js";
 
 /**
  * Perform requested file action
@@ -34,9 +35,16 @@ export const actionController = async (request, response, next) => {
             response.locals.__("BadRequestError.missingProperty", "file")
           );
         }
+        let file = files.file;
 
-        data = await mediaData.create(application, publication, files.file);
-        content = await mediaContent.upload(publication, data, files.file);
+        const type = await getMediaType(file);
+
+        if (type === "photo") {
+          file = await correctImageOrientation(file);
+        }
+
+        data = await mediaData.create(application, publication, file);
+        content = await mediaContent.upload(publication, data, file);
         break;
       }
 
