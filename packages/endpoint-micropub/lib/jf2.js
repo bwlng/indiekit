@@ -83,6 +83,17 @@ export const normaliseProperties = (publication, properties) => {
     properties.audio = getAudioProperty(properties, me);
   }
 
+  // Move `photo[]` property to `photo` property
+  if (properties["photo[]"]) {
+    properties.photo = [
+      ...properties["photo[]"],
+      ...(Array.isArray(properties.photo)
+        ? properties.photo
+        : [properties.photo]),
+    ].filter(Boolean);
+    delete properties["photo[]"];
+  }
+
   if (properties.photo) {
     properties.photo = getPhotoProperty(properties, me);
   }
